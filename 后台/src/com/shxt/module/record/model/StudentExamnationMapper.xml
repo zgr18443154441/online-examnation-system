@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.module.record.model.StudentExamnation">
+	<select id="list" resultType="com.shxt.module.record.model.StudentExamnation">
+		SELECT id,student_id,examnation_id,scores,time FROM student_examnation
+	</select>
+	<select id="one" resultType="com.shxt.module.record.model.StudentExamnation">
+		SELECT id,student_id,examnation_id,scores,time FROM student_examnation WHERE id = #{id}
+	</select>
+	<select id="search" resultType="com.shxt.module.record.model.StudentExamnation">
+		SELECT id,student_id,examnation_id,scores,time FROM student_examnation WHERE student_id = #{student_id} AND examnation_id = #{examnation_id}
+	</select>
+	<select id="search_examnation" resultMap="search_with_student">
+		SELECT id,student_id,examnation_id,scores,time FROM student_examnation WHERE examnation_id = #{examnation_id}
+	</select>
+	<resultMap type="com.shxt.module.record.model.StudentExamnation" id="search_with_student">
+		<id property="id" column="id"/>
+		<result property="student_id" column="student_id"/>
+		<result property="examnation_id" column="examnation_id"/>
+		<result property="scores" column="scores"/>
+		<result property="time" column="time"/>
+		<association property="user" column="student_id" javaType="com.shxt.module.user.model.User" select="search_student"/>
+	</resultMap>
+	<select id="search_student" resultType="com.shxt.module.user.model.User">
+		SELECT id,NAME,account,password,sex,photo,state,group_id,apply_date,register_date,user_type FROM USER WHERE id = #{id}
+	</select>
+	<insert id="add">
+		INSERT INTO student_examnation(id,student_id,examnation_id,scores,time) VALUES(#{id},#{student_id},#{examnation_id},#{scores},#{time})
+	</insert>
+	<update id="update">
+		UPDATE student_examnation SET scores=#{scores} WHERE id=#{id}
+	</update>
+	<update id="upload">
+		UPDATE student_examnation SET state = 2 WHERE examnation_id = #{examnation_id} AND student_id = #{student_id}
+	</update>
+</mapper>

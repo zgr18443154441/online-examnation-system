@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.module.user.model.User">
+	<select id="login" resultType="com.shxt.module.user.model.User">
+		SELECT id,account,PASSWORD,NAME,sex,photo,state,user_type,group_id FROM USER WHERE user_type = 0 AND account = #{account}
+	</select>
+	<insert id="add">
+		INSERT INTO USER(id,account,PASSWORD,NAME,sex,photo,user_type,apply_date,group_id) VALUES(#{id},#{account},#{password},#{NAME},#{sex},#{photo},0,#{apply_date},#{group_id})
+	</insert>
+	
+	
+	<!-- old -->
+	
+	<select id="list" resultType="com.shxt.module.user.model.User">
+		SELECT id,NAME,sex,photo,state,group_id,apply_date,register_date FROM USER WHERE user_type = #{user_type}
+	</select>
+	<select id="page" resultType="com.shxt.module.user.model.User">
+		SELECT id,NAME,sex,photo,state,group_id,apply_date,register_date FROM USER WHERE user_type = 0 LIMIT #{start},#{size}
+	</select>
+	<select id="count" resultType="java.lang.Integer">
+		SELECT count(*) FROM USER WHERE user_type = 0
+	</select>
+	<select id="one" resultType="com.shxt.module.user.model.User">
+		SELECT id,NAME,account,password,sex,photo,state,group_id,apply_date,register_date,user_type FROM USER WHERE id = #{id}
+	</select>
+	<update id="update">
+		UPDATE USER SET account=#{account},PASSWORD=#{password},photo=#{photo} WHERE id=#{id}
+	</update>
+	<delete id="delete">
+		DELETE FROM USER WHERE id=#{id}
+	</delete>
+	<select id="checked" resultType="com.shxt.module.user.model.User">
+		SELECT id,NAME,sex,photo,state,register_date,user_type FROM USER WHERE user_type != 0 AND state NOT IN(1,4)
+	</select>
+	<select id="unchecked" resultType="com.shxt.module.user.model.User">
+		SELECT id,NAME,sex,apply_date,user_type FROM USER WHERE user_type = 1 AND state = 1
+	</select>
+	<update id="accept">
+		UPDATE USER SET state = 2,register_date = #{register_date} WHERE id = #{id}
+	</update>
+	<update id="refuse">
+		UPDATE USER SET state = 4 WHERE id = #{id}
+	</update>
+</mapper>

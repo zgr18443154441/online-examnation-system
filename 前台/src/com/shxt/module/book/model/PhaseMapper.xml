@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.module.book.model.Phase">
+	<select id="list" resultType="com.shxt.module.book.model.Phase">
+		SELECT id,course_id,NAME,sort,chapter1_number,question_number FROM phase WHERE state = 1  ORDER BY sort
+	</select>
+	<select id="search" resultType="com.shxt.module.book.model.Phase">
+		SELECT id,NAME,sort,chapter1_number,question_number FROM phase WHERE course_id = #{course_id} AND state = 1  ORDER BY sort
+	</select>
+	<select id="one" resultType="com.shxt.module.book.model.Phase">
+		SELECT id,course_id,NAME,sort,state,chapter1_number,question_number FROM phase WHERE id = #{id}
+	</select>
+	<insert id="add">
+		INSERT INTO phase(id,course_id,NAME,sort) VALUES(#{id},#{course_id},#{NAME},#{sort})
+	</insert>
+	<update id="update">
+		UPDATE phase
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="course_id != ''">
+				course_id=#{course_id},
+			</if>
+			<if test="NAME != ''">
+				NAME=#{NAME},
+			</if>
+			<if test="sort != ''">
+				sort=#{sort},
+			</if>
+			<if test="state != ''">
+				state=#{state},
+			</if>
+			<if test="chapter1_number != ''">
+				chapter1_number=#{chapter1_number},
+			</if>
+			<if test="question_number != ''">
+				question_number=#{question_number},
+			</if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+	<delete id="delete">
+		DELETE FROM phase WHERE id=#{id}
+	</delete>
+</mapper>

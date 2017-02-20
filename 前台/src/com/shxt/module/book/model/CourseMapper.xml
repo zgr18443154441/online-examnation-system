@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.module.book.model.Course">
+	<select id="list" resultType="com.shxt.module.book.model.Course">
+		SELECT id,NAME,question_number,phase_number FROM course WHERE state = 1
+	</select>
+	<select id="one" resultType="com.shxt.module.book.model.Course">
+		SELECT id,NAME,question_number,phase_number,state FROM course WHERE id = #{id} 
+	</select>
+	<insert id="add">
+		INSERT INTO course(id,NAME) VALUES(#{id},#{NAME})
+	</insert>
+	<update id="update">
+		UPDATE course
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="NAME != ''">
+				NAME=#{NAME},
+			</if>
+			<if test="state != ''">
+				state=#{state},
+			</if>
+			<if test="question_number != ''">
+				question_number=#{question_number},
+			</if>
+			<if test="phase_number != ''">
+				phase_number=#{phase_number},
+			</if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+	<delete id="delete">
+		DELETE FROM course WHERE id=#{id}
+	</delete>
+</mapper>

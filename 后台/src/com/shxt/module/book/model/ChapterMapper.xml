@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.module.book.model.Chapter">
+	<select id="list1" resultType="com.shxt.module.book.model.Chapter">
+		SELECT id,course_id,phase_id,question_number,son_number,NAME,sort FROM chapter WHERE state = 1 AND c_level = 1 ORDER BY sort
+	</select>
+	<select id="list2" resultType="com.shxt.module.book.model.Chapter">
+		SELECT id,course_id,parent_id,phase_id,question_number,NAME,sort FROM chapter WHERE state = 1 AND c_level = 2 ORDER BY sort
+	</select>
+	<select id="search_parent" resultType="com.shxt.module.book.model.Chapter">
+		SELECT id,course_id,phase_id,parent_id,question_number,NAME,c_level,sort FROM chapter WHERE parent_id = #{parent_id} AND state = 1 AND c_level = 2 ORDER BY sort
+	</select>
+	<select id="search_phase" resultType="com.shxt.module.book.model.Chapter">
+		SELECT id,course_id,phase_id,question_number,son_number,NAME,c_level,sort FROM chapter WHERE phase_id = #{phase_id} AND state = 1 AND c_level = 1 ORDER BY sort
+	</select>
+	<select id="one" resultType="com.shxt.module.book.model.Chapter">
+		SELECT id,course_id,parent_id,phase_id,question_number,son_number,NAME,c_level,sort,state FROM chapter WHERE id = #{id}
+	</select>
+	<select id="sort_chapter1" resultType="com.shxt.module.book.model.Chapter">
+		SELECT id,course_id,parent_id,phase_id,question_number,son_number,NAME,c_level,sort,state FROM chapter WHERE phase_id = #{phase_id} AND sort = #{sort} AND parent_id IS NULL
+	</select>
+	<select id="sort_chapter2" resultType="com.shxt.module.book.model.Chapter">
+		SELECT id,course_id,parent_id,phase_id,question_number,son_number,NAME,c_level,sort,state FROM chapter WHERE parent_id = #{parent_id} AND sort = #{sort}
+	</select>
+	<select id="chapter1_number" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM chapter WHERE phase_id = #{phase_id} AND c_level = 1 AND state = 1
+	</select>
+	<select id="chapter2_number" resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM chapter WHERE parent_id = #{parent_id} AND c_level = 2 AND state = 1
+	</select>
+	<insert id="add">
+		INSERT INTO chapter(id,course_id,parent_id,phase_id,NAME,c_level,sort) VALUES(#{id},#{course_id},#{parent_id},#{phase_id},#{NAME},#{c_level},#{sort})
+	</insert>
+	<update id="update">
+		UPDATE chapter
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="course_id != ''">
+				course_id=#{course_id},
+			</if>
+			<if test="parent_id != ''">
+				parent_id=#{parent_id},
+			</if>
+			<if test="phase_id != ''">
+				phase_id=#{phase_id},
+			</if>
+			<if test="NAME != ''">
+				NAME=#{NAME},
+			</if>
+			<if test="c_level != ''">
+				c_level=#{c_level},
+			</if>
+			<if test="sort != ''">
+				sort=#{sort},
+			</if>
+			<if test="state != ''">
+				state=#{state},
+			</if>
+			<if test="son_number != ''">
+				son_number=#{son_number},
+			</if>
+			<if test="question_number != ''">
+				question_number=#{question_number},
+			</if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+	<update id="delete">
+		UPDATE chapter SET state = 0 WHERE id=#{id}
+	</update>
+	<update id="delete_course">
+		UPDATE chapter SET state = 0 WHERE course_id=#{id}
+	</update>
+	<update id="delete_phase">
+		UPDATE chapter SET state = 0 WHERE phase_id=#{id}
+	</update>
+	<update id="delete_chapter1">
+		UPDATE chapter SET state = 0 WHERE parent_id=#{id}
+	</update>
+</mapper>

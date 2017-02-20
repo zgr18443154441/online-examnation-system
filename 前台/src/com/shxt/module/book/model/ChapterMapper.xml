@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.module.book.model.Chapter">
+	<select id="list1" resultType="com.shxt.module.book.model.Chapter">
+		SELECT id,course_id,phase_id,question_number,son_number,NAME,sort FROM chapter WHERE state = 1 AND c_level = 1 ORDER BY sort
+	</select>
+	<select id="list2" resultType="com.shxt.module.book.model.Chapter">
+		SELECT id,course_id,parent_id,phase_id,question_number,NAME,sort FROM chapter WHERE state = 1 AND c_level = 2 ORDER BY sort
+	</select>
+	<select id="search_parent" resultType="com.shxt.module.book.model.Chapter">
+		SELECT id,course_id,phase_id,question_number,NAME,c_level,sort FROM chapter WHERE parent_id = #{parent_id} AND state = 1 AND c_level = 2 ORDER BY sort
+	</select>
+	<select id="search_phase" resultType="com.shxt.module.book.model.Chapter">
+		SELECT id,course_id,question_number,son_number,NAME,c_level,sort FROM chapter WHERE phase_id = #{phase_id} AND state = 1 AND c_level = 1 ORDER BY sort
+	</select>
+	<select id="search_course" resultType="com.shxt.module.book.model.Chapter">
+		SELECT id,question_number,son_number,NAME,c_level,sort FROM chapter WHERE course_id = #{course_id} AND state = 1 GROUP BY sort
+	</select>
+	<select id="one" resultType="com.shxt.module.book.model.Chapter">
+		SELECT id,course_id,parent_id,phase_id,question_number,son_number,NAME,c_level,sort,state FROM chapter WHERE id = #{id}
+	</select>
+	<insert id="add">
+		INSERT INTO chapter(id,course_id,parent_id,phase_id,NAME,c_level,sort) VALUES(#{id},#{course_id},#{parent_id},#{phase_id},#{NAME},#{c_level},#{sort})
+	</insert>
+	<update id="update">
+		UPDATE chapter
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="course_id != ''">
+				course_id=#{course_id},
+			</if>
+			<if test="parent_id != ''">
+				parent_id=#{parent_id},
+			</if>
+			<if test="phase_id != ''">
+				phase_id=#{phase_id},
+			</if>
+			<if test="NAME != ''">
+				NAME=#{NAME},
+			</if>
+			<if test="c_level != ''">
+				c_level=#{c_level},
+			</if>
+			<if test="sort != ''">
+				sort=#{sort},
+			</if>
+			<if test="state != ''">
+				state=#{state},
+			</if>
+			<if test="son_number != ''">
+				son_number=#{son_number},
+			</if>
+			<if test="question_number != ''">
+				question_number=#{question_number},
+			</if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+	<delete id="delete">
+		DELETE FROM chapter WHERE id=#{id}
+	</delete>
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.module.examnation.model.ExamnationQuestion">
+	<select id="list" resultType="com.shxt.module.examnation.model.ExamnationQuestion">
+		SELECT id,examnation_id,question_id,score,sort FROM examnation_question
+	</select>
+	<select id="search_examnation" resultType="com.shxt.module.examnation.model.ExamnationQuestion">
+		SELECT id,question_id,score,sort FROM examnation_question WHERE examnation_id = #{examnation_id} ORDER BY sort
+	</select>
+	<select id="one" resultType="com.shxt.module.examnation.model.ExamnationQuestion">
+		SELECT id,examnation_id,question_id,score,sort FROM examnation_question WHERE examnation_id = #{examnation_id} AND question_id = #{question_id}
+	</select>
+	<insert id="add">
+		INSERT INTO examnation_question(id,examnation_id,question_id,score,sort) VALUES(#{id},#{examnation_id},#{question_id},#{score},#{sort})
+	</insert>
+	<update id="update">
+		UPDATE examnation_question
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="examnation_id != ''">
+				examnation_id=#{examnation_id},
+			</if>
+			<if test="question_id != ''">
+				question_id=#{question_id},
+			</if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+	<update id="score_up">
+		UPDATE examnation_question SET score = score + 1 WHERE id = #{id}
+	</update>
+	<update id="score_down">
+		UPDATE examnation_question SET score = score - 1 WHERE id = #{id}
+	</update>
+</mapper>

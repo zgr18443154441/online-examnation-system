@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.module.examnation.model.Examnation">
+	<select id="list" resultMap="examnationMap">
+		SELECT id,title,judge_number,judge_score,single_choice_number,single_choice_score,multiple_choice_number,multiple_choice_score,filling_blank_number,filling_blank_score,short_answer_number,short_answer_score,programme_number,programme_score,start_time,end_time,teacher_id,text_date,state,role,set_style FROM examnation WHERE state = 1 ORDER BY text_date DESC ;
+	</select>
+	<select id="list_untext" resultMap="examnationMap">
+		SELECT id,title,judge_number,judge_score,single_choice_number,single_choice_score,multiple_choice_number,multiple_choice_score,filling_blank_number,filling_blank_score,short_answer_number,short_answer_score,programme_number,programme_score,start_time,end_time,teacher_id,text_date,role,set_style FROM examnation WHERE state = 1 AND teacher_id = #{teacher_id} ORDER BY text_date DESC ;
+	</select>
+	<select id="list_teacher" resultMap="examnationMap">
+		SELECT id,title,judge_number,judge_score,single_choice_number,single_choice_score,multiple_choice_number,multiple_choice_score,filling_blank_number,filling_blank_score,short_answer_number,short_answer_score,programme_number,programme_score,start_time,end_time,text_date,teacher_id,role,set_style FROM examnation WHERE state = 3 AND teacher_id = #{teacher_id} AND role = 2 ORDER BY text_date DESC ;
+	</select>
+	<select id="list_finish" resultMap="examnationMap">
+		SELECT id,title,judge_number,judge_score,single_choice_number,single_choice_score,multiple_choice_number,multiple_choice_score,filling_blank_number,filling_blank_score,short_answer_number,short_answer_score,programme_number,programme_score,start_time,end_time,text_date,teacher_id,role,set_style FROM examnation WHERE state = 4 AND teacher_id = #{teacher_id} ORDER BY text_date DESC ;
+	</select>
+	<select id="one" resultMap="examnationMap">
+		SELECT id,title,judge_number,judge_score,single_choice_number,single_choice_score,multiple_choice_number,multiple_choice_score,filling_blank_number,filling_blank_score,short_answer_number,short_answer_score,programme_number,programme_score,state,start_time,end_time,teacher_id,text_date,role,set_style FROM examnation WHERE id = #{id}
+	</select>
+	<resultMap type="com.shxt.module.examnation.model.Examnation" id="examnationMap">
+		<id property="id" column="id"/>
+		<result property="title" column="title"/>
+		<result property="judge_number" column="judge_number"/>
+		<result property="judge_score" column="judge_score"/>
+		<result property="single_choice_number" column="single_choice_number"/>
+		<result property="single_choice_score" column="single_choice_score"/>
+		<result property="multiple_choice_number" column="multiple_choice_number"/>
+		<result property="multiple_choice_score" column="multiple_choice_score"/>
+		<result property="filling_blank_number" column="filling_blank_number"/>
+		<result property="filling_blank_score" column="filling_blank_score"/>
+		<result property="short_answer_number" column="short_answer_number"/>
+		<result property="short_answer_score" column="short_answer_score"/>
+		<result property="programme_number" column="programme_number"/>
+		<result property="programme_score" column="programme_score"/>
+		<result property="state" column="state"/>
+		<result property="role" column="role"/>
+		<result property="set_style" column="set_style"/>
+		<result property="start_time" column="start_time"/>
+		<result property="end_time" column="end_time"/>
+		<result property="teacher_id" column="teacher_id"/>
+		<result property="text_date" column="text_date"/>
+		<collection property="groups" javaType="java.util.ArrayList" column="teacher_id" select="search_group" ofType="com.shxt.module.group.model.Group"></collection>
+	</resultMap>
+	<update id="update_question_number">
+		UPDATE examnation SET single_choice_number = #{single_choice_number},multiple_choice_number = #{multiple_choice_number},filling_blank_number = #{filling_blank_number},short_answer_number = #{short_answer_number},programme_number = #{programme_number},judge_number = #{judge_number},role = #{role} WHERE id = #{id}
+	</update>
+	<update id="update_3">
+		UPDATE examnation SET state = 3 WHERE id = #{id}
+	</update>
+	<update id="update_4">
+		UPDATE examnation SET state = 4 WHERE id = #{id}
+	</update>
+	<select id="search_group" resultType="com.shxt.module.group.model.Group">
+		SELECT id,NAME,student_number,state,start_date,end_date FROM banji WHERE teacher_id = #{teacher_id}
+	</select>
+	<insert id="add">
+		INSERT INTO examnation(id,title,judge_number,judge_score,single_choice_number,single_choice_score,multiple_choice_number,multiple_choice_score,filling_blank_number,filling_blank_score,short_answer_number,short_answer_score,programme_number,programme_score,start_time,end_time,teacher_id,text_date,role,set_style) VALUES(#{id},#{title},#{judge_number},#{judge_score},#{single_choice_number},#{single_choice_score},#{multiple_choice_number},#{multiple_choice_score},#{filling_blank_number},#{filling_blank_score},#{short_answer_number},#{short_answer_score},#{programme_number},#{programme_score},#{start_time},#{end_time},#{teacher_id},#{text_date},#{role},#{set_style})
+	</insert>
+	<insert id="match_group">
+		INSERT INTO examnation_banji(id,examnation_id,group_id) VALUES(#{id},#{examnation_id},#{group_id})
+	</insert>
+	<delete id="delete">
+		DELETE FROM examnation WHERE id = #{id}
+	</delete>
+	<delete id="delete_banji">
+		DELETE FROM examnation_banji WHERE examnation_id = #{examnation_id}
+	</delete>
+</mapper>

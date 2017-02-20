@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.module.group.model.Group">
+	<select id="list" resultType="com.shxt.module.group.model.Group">
+		SELECT id,NAME,student_number,state,start_date,end_date,teacher_id FROM banji
+	</select>
+	<select id="list_alive" resultType="com.shxt.module.group.model.Group">
+		SELECT id,NAME,student_number,start_date,end_date,teacher_id FROM banji WHERE state = 1
+	</select>
+	<select id="list_teacher" resultType="com.shxt.module.group.model.Group">
+		SELECT id,NAME,student_number,state,start_date,end_date FROM banji WHERE teacher_id = #{teacher_id}
+	</select>
+	<select id="one" resultType="com.shxt.module.group.model.Group">
+		SELECT id,NAME,student_number,state,start_date,end_date,teacher_id FROM banji WHERE id = #{id}
+	</select>
+	<insert id="add">
+		INSERT INTO banji(id,NAME,start_date,teacher_id) VALUES(#{id},#{NAME},#{start_date},#{teacher_id})
+	</insert>
+	<update id="update">
+		UPDATE banji
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="NAME != ''">
+				NAME=#{NAME},
+			</if>
+			<if test="student_number != ''">
+				student_number=#{student_number},
+			</if>
+			<if test="state != ''">
+				state=#{state},
+			</if>
+			<if test="end_date != ''">
+				end_date=#{end_date},
+			</if>
+			<if test="teacher_id != ''">
+				teacher_id=#{teacher_id},
+			</if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+	<delete id="delete">
+		DELETE FROM banji WHERE id=#{id}
+	</delete>
+	
+	<select id="boy" resultType="java.lang.Integer">
+		SELECT count(*) from user where sex = 1 and group_id = #{id}
+	</select>
+</mapper>

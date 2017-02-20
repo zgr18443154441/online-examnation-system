@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.module.problem.model.Problem">
+	<select id="list" resultType="com.shxt.module.problem.model.Problem">
+		SELECT id,student_id,teacher_id,consult,reply,consult_date,reply_date,about FROM problem
+	</select>
+	<select id="list_student" resultType="com.shxt.module.problem.model.Problem">
+		SELECT id,student_id,teacher_id,consult,reply,consult_date,reply_date,about FROM problem WHERE student_id = #{student_id}
+	</select>
+	<select id="one" resultType="com.shxt.module.problem.model.Problem">
+		SELECT id,student_id,teacher_id,consult,reply,consult_date,reply_date,about FROM problem WHERE id = #{id}
+	</select>
+	<insert id="add">
+		INSERT INTO problem(id,student_id,teacher_id,consult,consult_date,about) VALUES(#{id},#{student_id},#{teacher_id},#{consult},#{consult_date},#{about})
+	</insert>
+	<update id="update">
+		UPDATE problem
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="reply != ''">
+				reply=#{reply},
+			</if>
+			<if test=",reply_date != ''">
+				,reply_date=#{,reply_date},
+			</if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+	<delete id="delete">
+		DELETE FROM problem WHERE id=#{id}
+	</delete>
+</mapper>

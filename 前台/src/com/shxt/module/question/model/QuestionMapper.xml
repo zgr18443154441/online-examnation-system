@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.module.question.model.Question">
+	<select id="list" resultMap="search_other">
+		SELECT id,content,picture,LEVEL,TYPE,answer,course,phase,chapter1,chapter2,use_times,right_times,analysis,teacher_id FROM question WHERE TYPE = #{TYPE} AND state = 1
+	</select>
+	<select id="random" resultMap="search_other">
+		SELECT id,content,picture,LEVEL,TYPE,answer,course,phase,chapter1,chapter2,use_times,right_times,analysis,teacher_id FROM question WHERE state = 1
+	</select>
+	<select id="one" resultMap="search_other">
+		SELECT id,content,picture,LEVEL,TYPE,answer,course,phase,chapter1,chapter2,use_times,right_times,analysis,teacher_id FROM question WHERE id = #{id}
+	</select>
+	<select id="page" resultMap="search_other">
+		SELECT id,content,picture,LEVEL,answer,course,phase,chapter1,chapter2,use_times,right_times,analysis,teacher_id FROM question WHERE TYPE = #{TYPE} AND state = 1 LIMIT #{start},#{size}
+	</select>
+	<select id="search_course" resultMap="search_other">
+		SELECT id,content,picture,TYPE,LEVEL,answer,course,phase,chapter1,chapter2,use_times,right_times,analysis,teacher_id FROM question WHERE course = #{course} AND state = 1
+	</select>
+	<select id="search_phase" resultMap="search_other">
+		SELECT id,content,picture,TYPE,LEVEL,answer,course,phase,chapter1,chapter2,use_times,right_times,analysis,teacher_id FROM question WHERE phase = #{phase} AND state = 1
+	</select>
+	<select id="search_chapter1" resultMap="search_other">
+		SELECT id,content,picture,TYPE,LEVEL,answer,course,phase,chapter1,chapter2,use_times,right_times,analysis,teacher_id FROM question WHERE chapter1 = #{chapter1} AND state = 1
+	</select>
+	<select id="search_chapter2" resultMap="search_other">
+		SELECT id,content,picture,TYPE,LEVEL,answer,course,phase,chapter1,chapter2,use_times,right_times,analysis,teacher_id FROM question WHERE chapter2 = #{chapter2} AND state = 1
+	</select>
+	<select id="new_question" resultMap="search_other">
+		SELECT id,content,picture,TYPE,LEVEL,answer,course,phase,chapter1,chapter2,use_times,right_times,analysis,teacher_id FROM question WHERE state = 2 LIMIT #{start},#{size}
+	</select>
+	<resultMap type="com.shxt.module.question.model.Question" id="search_other">
+			<id property="id" column="id"/>
+			<result property="content" column="content"/>
+			<result property="picture" column="picture"/>
+			<result property="LEVEL" column="LEVEL"/>
+			<result property="answer" column="answer"/>
+			<result property="course" column="course"/>
+			<result property="phase" column="phase"/>
+			<result property="chapter1" column="chapter1"/>
+			<result property="chapter2" column="chapter2"/>
+			<result property="use_times" column="use_times"/>
+			<result property="right_times" column="right_times"/>
+			<result property="analysis" column="analysis"/>
+			<result property="teacher_id" column="teacher_id"/>
+			<collection property="right_choice" javaType="java.util.ArrayList" column="id" select="search_right" ofType="com.shxt.module.question.model.QuestionChoice"></collection>
+			<collection property="wrong_choice" javaType="java.util.ArrayList" column="id" select="search_wrong" ofType="com.shxt.module.question.model.QuestionChoice"></collection>
+			<collection property="filling_blank" javaType="java.util.ArrayList" column="id" select="search_blank" ofType="com.shxt.module.question.model.FillingBlank"></collection>
+	</resultMap>
+	<select id="search_right" resultType="com.shxt.module.question.model.QuestionChoice">
+		SELECT id,content,isright FROM question_choice WHERE isright = 1 AND question_id = #{question_id}
+	</select>
+	<select id="search_wrong" resultType="com.shxt.module.question.model.QuestionChoice">
+		SELECT id,content,isright FROM question_choice WHERE isright = 0 AND question_id = #{question_id}
+	</select>
+	<select id="search_blank" resultType="com.shxt.module.question.model.FillingBlank">
+		SELECT id,content,location,question_id FROM filling_blank WHERE question_id = #{question_id} ORDER BY location
+	</select>
+	
+	
+	<select id="count" resultType="java.lang.Integer">
+		SELECT count(*) FROM question WHERE TYPE = #{TYPE} AND state = 1
+	</select>
+	<select id="count_new" resultType="java.lang.Integer">
+		SELECT count(*) FROM question WHERE TYPE = #{TYPE} AND state = 2
+	</select>
+	<select id="count_chapter2" resultType="java.lang.Integer">
+		SELECT count(*) FROM question WHERE chapter2 = #{chapter2} AND state = 1
+	</select>
+	<insert id="add">
+		INSERT INTO question(id,content,picture,TYPE,LEVEL,answer,course,phase,chapter1,chapter2,analysis,state,teacher_id) VALUES(#{id},#{content},#{picture},#{TYPE},#{LEVEL},#{answer},#{course},#{phase},#{chapter1},#{chapter2},#{analysis},#{state},#{teacher_id})
+	</insert>
+	<update id="update">
+		UPDATE question
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="content != ''">
+				content=#{content},
+			</if>
+			<if test="picture != ''">
+				picture=#{picture},
+			</if>
+			<if test="TYPE != ''">
+				TYPE=#{TYPE},
+			</if>
+			<if test="LEVEL != ''">
+				LEVEL=#{LEVEL},
+			</if>
+			<if test="answer != ''">
+				answer=#{answer},
+			</if>
+			<if test="course != ''">
+				course=#{course},
+			</if>
+			<if test="phase != ''">
+				phase=#{phase},
+			</if>
+			<if test="chapter1 != ''">
+				chapter1=#{chapter1},
+			</if>
+			<if test="chapter2 != ''">
+				chapter2=#{chapter2},
+			</if>
+			<if test="analysis != ''">
+				analysis=#{analysis},
+			</if>
+			<if test="state != ''">
+				state=#{state},
+			</if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+	<delete id="delete">
+		DELETE FROM question WHERE id=#{id}
+	</delete>
+	
+	<update id="accept">
+		UPDATE question SET state = 1 WHERE id = #{id}
+	</update>
+	<update id="refuse">
+		UPDATE question SET state = 0 WHERE id = #{id}
+	</update>
+	<update id="use_up">
+		UPDATE question SET use_times = use_times+1 WHERE id = #{id}
+	</update>
+	<update id="right_up">
+		UPDATE question SET right_times = right_times+1 WHERE id = #{id}
+	</update>
+</mapper>

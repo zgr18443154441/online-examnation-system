@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.module.question.model.FillingBlank">
+	<select id="list" resultType="com.shxt.module.question.model.FillingBlank">
+		SELECT id,content,location,question_id FROM filling_blank WHERE question_id = #{question_id}
+	</select>
+	<select id="one" resultType="com.shxt.module.question.model.FillingBlank">
+		SELECT id,content,location,question_id FROM filling_blank WHERE id = #{id}
+	</select>
+	<insert id="add">
+		INSERT INTO filling_blank(id,content,location,question_id) VALUES(#{id},#{content},#{location},#{question_id})
+	</insert>
+	<update id="update">
+		UPDATE filling_blank
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="content != ''">
+				content=#{content},
+			</if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+	<delete id="delete">
+		DELETE FROM filling_blank WHERE id=#{id}
+	</delete>
+	
+</mapper>

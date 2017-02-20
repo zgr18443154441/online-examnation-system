@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.module.question.model.QuestionChoice">
+	<select id="list" resultType="com.shxt.module.question.model.QuestionChoice">
+		SELECT id,content FROM question_choice WHERE isright = #{isright} AND question_id = #{question_id}
+	</select>
+	<select id="one" resultType="com.shxt.module.question.model.QuestionChoice">
+		SELECT id,content,isright,question_id FROM question_choice WHERE id = #{id}
+	</select>
+	<insert id="add">
+		INSERT INTO question_choice(id,content,isright,question_id) VALUES(#{id},#{content},#{isright},#{question_id})
+	</insert>
+	<update id="update">
+		UPDATE question_choice
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="content != ''">
+				content=#{content},
+			</if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+	<delete id="delete">
+		DELETE FROM question_choice WHERE id=#{id}
+	</delete>
+</mapper>

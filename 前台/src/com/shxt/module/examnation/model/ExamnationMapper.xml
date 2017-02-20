@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.module.examnation.model.Examnation">
+	<select id="list" resultMap="examnationMap">
+		SELECT id,title,judge_number,judge_score,single_choice_number,single_choice_score,multiple_choice_number,multiple_choice_score,filling_blank_number,filling_blank_score,short_answer_number,short_answer_score,programme_number,programme_score,start_time,end_time,teacher_id,text_date FROM examnation WHERE state = 1 ORDER BY text_date
+	</select>
+	<select id="list_history" resultMap="examnationMap">
+		SELECT id,title,judge_number,judge_score,single_choice_number,single_choice_score,multiple_choice_number,multiple_choice_score,filling_blank_number,filling_blank_score,short_answer_number,short_answer_score,programme_number,programme_score,start_time,end_time,teacher_id,text_date FROM examnation WHERE state = 4 ORDER BY text_date
+	</select>
+	<select id="one" resultMap="examnationMap">
+		SELECT id,title,judge_number,judge_score,single_choice_number,single_choice_score,multiple_choice_number,multiple_choice_score,filling_blank_number,filling_blank_score,short_answer_number,short_answer_score,programme_number,programme_score,state,start_time,end_time,teacher_id,text_date FROM examnation WHERE id = #{id}
+	</select>
+	<resultMap type="com.shxt.module.examnation.model.Examnation" id="examnationMap">
+		<id property="id" column="id"/>
+		<result property="title" column="title"/>
+		<result property="judge_number" column="judge_number"/>
+		<result property="judge_score" column="judge_score"/>
+		<result property="single_choice_number" column="single_choice_number"/>
+		<result property="single_choice_score" column="single_choice_score"/>
+		<result property="multiple_choice_number" column="multiple_choice_number"/>
+		<result property="multiple_choice_score" column="multiple_choice_score"/>
+		<result property="filling_blank_number" column="filling_blank_number"/>
+		<result property="filling_blank_score" column="filling_blank_score"/>
+		<result property="short_answer_number" column="short_answer_number"/>
+		<result property="short_answer_score" column="short_answer_score"/>
+		<result property="programme_number" column="programme_number"/>
+		<result property="programme_score" column="programme_score"/>
+		<result property="state" column="state"/>
+		<result property="start_time" column="start_time"/>
+		<result property="end_time" column="end_time"/>
+		<result property="teacher_id" column="teacher_id"/>
+		<result property="text_date" column="text_date"/>
+		<collection property="groups" javaType="java.util.ArrayList" column="teacher_id" select="search_group" ofType="com.shxt.module.group.model.Group"></collection>
+	</resultMap>
+	<select id="search_group" resultType="com.shxt.module.group.model.Group">
+		SELECT id,NAME,student_number,state,start_date,end_date FROM banji WHERE teacher_id = #{teacher_id}
+	</select>
+	<insert id="add">
+		INSERT INTO examnation(id,title,judge_number,judge_score,single_choice_number,single_choice_score,multiple_choice_number,multiple_choice_score,filling_blank_number,filling_blank_score,short_answer_number,short_answer_score,programme_number,programme_score,start_time,end_time,teacher_id,text_date) VALUES(#{id},#{title},#{judge_number},#{judge_score},#{single_choice_number},#{single_choice_score},#{multiple_choice_number},#{multiple_choice_score},#{filling_blank_number},#{filling_blank_score},#{short_answer_number},#{short_answer_score},#{programme_number},#{programme_score},#{start_time},#{end_time},#{teacher_id},#{text_date})
+	</insert>
+	<delete id="delete">
+		UPDATE examnation SET state = 0 WHERE id = #{id}
+	</delete>
+	<insert id="match_group">
+		INSERT INTO examnation_banji(id,examnation_id,group_id) VALUES(#{id},#{examnation_id},#{group_id})
+	</insert>
+	<select id="list_group" resultType="java.lang.String">
+		SELECT examnation_id FROM examnation_banji WHERE group_id = #{group_id}
+	</select>
+
+</mapper>

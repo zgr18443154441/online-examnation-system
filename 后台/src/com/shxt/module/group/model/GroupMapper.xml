@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.module.group.model.Group">
+	<select id="list" resultType="com.shxt.module.group.model.Group">
+		SELECT id,NAME,student_number,state,start_date,end_date,teacher_id FROM banji
+	</select>
+	<select id="one" resultType="com.shxt.module.group.model.Group">
+		SELECT id,NAME,student_number,state,start_date,end_date,teacher_id FROM banji WHERE id = #{id}
+	</select>
+	
+	
+	<select id="list_unchecked" resultMap="search_with_unchecked">
+		SELECT id,NAME,student_number,state,start_date,end_date FROM banji WHERE teacher_id = #{teacher_id}
+	</select>
+	<resultMap type="com.shxt.module.group.model.Group" id="search_with_unchecked">
+		<id property="id" column="id"/>
+		<result property="NAME" column="NAME"/>
+		<result property="student_number" column="student_number"/>
+		<result property="state" column="state"/>
+		<result property="start_date" column="start_date"/>
+		<result property="end_date" column="end_date"/>
+		<result property="teacher_id" column="teacher_id"/>
+		<collection property="students" javaType="java.util.ArrayList" column="id" select="search_unchecked" ofType="com.shxt.module.user.model.User"></collection>
+	</resultMap>
+	<select id="search_unchecked" resultType="com.shxt.module.user.model.User">
+		SELECT id,NAME,account,password,sex,photo,apply_date,register_date FROM USER WHERE group_id = #{group_id} AND user_type = 0 AND state = 1
+	</select>
+	
+	
+	<select id="list_teacher" resultMap="search_with_students">
+		SELECT id,NAME,student_number,state,start_date,end_date FROM banji WHERE teacher_id = #{teacher_id}
+	</select>
+	<resultMap type="com.shxt.module.group.model.Group" id="search_with_students">
+		<id property="id" column="id"/>
+		<result property="NAME" column="NAME"/>
+		<result property="student_number" column="student_number"/>
+		<result property="state" column="state"/>
+		<result property="start_date" column="start_date"/>
+		<result property="end_date" column="end_date"/>
+		<result property="teacher_id" column="teacher_id"/>
+		<collection property="students" javaType="java.util.ArrayList" column="id" select="search_students" ofType="com.shxt.module.user.model.User"></collection>
+	</resultMap>
+	<select id="search_students" resultType="com.shxt.module.user.model.User">
+		SELECT id,NAME,account,password,sex,photo,apply_date,register_date,state FROM USER WHERE group_id = #{group_id} AND user_type = 0
+	</select>
+	
+	<insert id="add">
+		INSERT INTO banji(id,NAME,start_date,teacher_id) VALUES(#{id},#{NAME},#{start_date},#{teacher_id})
+	</insert>
+	<update id="update">
+		UPDATE banji
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="NAME != ''">
+				NAME=#{NAME},
+			</if>
+			<if test="student_number != ''">
+				student_number=#{student_number},
+			</if>
+			<if test="state != ''">
+				state=#{state},
+			</if>
+			<if test="end_date != ''">
+				end_date=#{end_date},
+			</if>
+			<if test="teacher_id != ''">
+				teacher_id=#{teacher_id},
+			</if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+	<delete id="delete">
+		DELETE FROM banji WHERE id=#{id}
+	</delete>
+	<select id="boy" resultType="java.lang.Integer">
+		SELECT count(*) from user where sex = 1 and group_id = #{id} AND user_type = 0
+	</select>
+	<update id="student_number_add">
+		UPDATE banji SET student_number = student_number + 1 WHERE id = #{id}
+	</update>
+</mapper>

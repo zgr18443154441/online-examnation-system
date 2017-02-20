@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.module.question.model.QuestionType">
+	
+	<select id="one" resultType="com.shxt.module.question.model.QuestionType">
+		SELECT id,NAME,type_number FROM question_type WHERE id = #{id}
+	</select>
+	
+	<select id="list" resultType="com.shxt.module.question.model.QuestionType">
+		SELECT id,NAME,type_number FROM question_type
+	</select>
+	
+	<update id="update">
+		UPDATE question_type 
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="type_number != ''">
+				type_number=#{type_number},
+			</if>
+		</trim>
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

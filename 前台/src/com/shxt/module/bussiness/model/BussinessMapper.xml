@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.module.bussiness.model.Bussiness">
+	<select id="list" resultType="com.shxt.module.bussiness.model.Bussiness">
+		SELECT id,content,built_date,group_id,teacher_id FROM bussiness WHERE group_id = #{group_id}
+	</select>
+	<insert id="add">
+		INSERT INTO bussiness(id,content,built_date,group_id,teacher_id) VALUES(#{id},#{content},#{built_date},#{group_id},#{teacher_id})
+	</insert>
+	
+</mapper>

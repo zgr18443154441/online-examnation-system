@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shxt.module.record.model.StudentAnswer">
+	<select id="list" resultType="com.shxt.module.record.model.StudentAnswer">
+		SELECT id,question_id,student_id,examnation_id,single_choice_id,multiple_choice_id,answer FROM student_answer
+	</select>
+	<select id="one" resultType="com.shxt.module.record.model.StudentAnswer">
+		SELECT id,question_id,student_id,examnation_id,single_choice_id,multiple_choice_id,answer FROM student_answer WHERE id = #{id}
+	</select>
+	<select id="search_student" resultMap="search_with_filling">
+		SELECT id,question_id,student_id,examnation_id,single_choice_id,multiple_choice_id,answer FROM student_answer WHERE student_id = #{student_id} AND examnation_id = #{examnation_id}
+	</select>
+	<resultMap type="com.shxt.module.record.model.StudentAnswer" id="search_with_filling">
+		<id property="id" column="id"/>
+		<result property="question_id" column="question_id"/>
+		<result property="student_id" column="student_id"/>
+		<result property="examnation_id" column="examnation_id"/>
+		<result property="single_choice_id" column="single_choice_id"/>
+		<result property="multiple_choice_id" column="multiple_choice_id"/>
+		<result property="answer" column="answer"/>
+		<collection property="fillings" javaType="java.util.ArrayList" column="id" select="search_filling" ofType="com.shxt.module.record.model.StudentFilling"></collection>
+	</resultMap>
+	<select id="search_filling" resultType="com.shxt.module.record.model.StudentFilling">
+		SELECT id,filling,location,answer_id FROM student_filling WHERE answer_id = #{id} ORDER BY location
+	</select>
+	<select id="search_single" resultType="com.shxt.module.record.model.StudentAnswer">
+		SELECT id,question_id,student_id,examnation_id,single_choice_id,multiple_choice_id,answer FROM student_answer WHERE question_id = #{question_id} AND student_id = #{student_id} AND examnation_id = #{examnation_id}
+	</select>
+	<select id="search_multiple" resultType="com.shxt.module.record.model.StudentAnswer">
+		SELECT id,question_id,student_id,examnation_id,single_choice_id,multiple_choice_id,answer FROM student_answer WHERE question_id = #{question_id} AND student_id = #{student_id} AND examnation_id = #{examnation_id} AND multiple_choice_id = #{choice_id}
+	</select>
+	<insert id="add">
+		INSERT INTO student_answer(id,question_id,student_id,examnation_id,single_choice_id,multiple_choice_id,answer) VALUES(#{id},#{question_id},#{student_id},#{examnation_id},#{single_choice_id},#{multiple_choice_id},#{answer})
+	</insert>
+	<update id="update">
+		UPDATE student_answer
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="single_choice_id != ''">
+				single_choice_id=#{single_choice_id},
+			</if>
+			<if test="multiple_choice_id != ''">
+				multiple_choice_id=#{multiple_choice_id},
+			</if>
+			<if test="answer != ''">
+				answer=#{answer},
+			</if>
+		</trim>
+		WHERE id=#{id}
+	</update>
+	<delete id="delete">
+		DELETE FROM student_answer WHERE id=#{id}
+	</delete>
+	
+</mapper>
